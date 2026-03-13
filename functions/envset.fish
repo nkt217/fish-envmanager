@@ -66,30 +66,6 @@ function envset --description "Set a persistent environment variable"
 end
 
 
-function __envset_write_to_config --argument-names varname varvalue
-    set -l config_file ~/.config/fish/conf.d/envmanager.fish
-
-    # Create conf.d dir and file if needed
-    mkdir -p ~/.config/fish/conf.d
-
-    if not test -f $config_file
-        echo "# envmanager - persistent environment variables" > $config_file
-        echo "# Managed by envset/envunset. Do not edit manually." >> $config_file
-        echo "" >> $config_file
-    end
-
-    # Remove existing entry for this var if present
-    if test -f $config_file
-        set -l tmpfile (mktemp)
-        grep -v "^set -Ux $varname " $config_file > $tmpfile 2>/dev/null
-        mv $tmpfile $config_file
-    end
-
-    # Append the new entry
-    echo "set -Ux $varname $varvalue" >> $config_file
-end
-
-
 function __envset_help
     echo ""
     echo (set_color --bold)"envset"(set_color normal)" - Set a persistent environment variable"
